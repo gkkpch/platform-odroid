@@ -48,7 +48,7 @@ compile_kernel() {
 
   log "securing used defconfig file"
   rm ${SRC}/configs/config-4.9*
-  kver=`make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 kernelrelease`-`date +%Y.%m.%d-%H.%M`
+  kver=`make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 kernelrelease`
   cp arch/arm64/configs/odroidg12_defconfig ${SRC}/configs/config-${kver}
 
   cd ..
@@ -91,7 +91,7 @@ build_platform() {
   cp configs/${DEVICE}-example.user.config.ini ${PLATFORMDIR}/boot/example.user.config.ini
 
   log "Coyping firmware..."
-  cp -pdR firmware/* ${DEVICE}/lib/firmware
+  cp -pdR firmware/ ${DEVICE}
 
   log "Copying etc"
   cp -pdR "etc" ${DEVICE}
