@@ -10,8 +10,8 @@ N2: https://github.com/hardkernel/linux.git, branch odroidg12-4.9.y
 
 
 **20240409: General: removed support for C0/C1/C1+/C2/XU4/X2**
-  ^^^^^^^^
-
+**20250727: From the Bookworm release, there will only be a single kernel maintenance C4/N2**
+See below for details
 
 **Platform files for N2, kernel version 4.9.y**
 |Date|Author|Change
@@ -36,7 +36,7 @@ N2: https://github.com/hardkernel/linux.git, branch odroidg12-4.9.y
 ||| - add /etc/modprobe.d/g_audio.conf
 ||| - add /etc/modules
 |20240409|gkkpch|Change boot.ini: 'bootconfig' becomes 'uidconfig'
-
+|20250727||Merged N2/C4 maintenance
 
 
 **Platform files for C4, kernel version 4.9.y**
@@ -53,5 +53,24 @@ N2: https://github.com/hardkernel/linux.git, branch odroidg12-4.9.y
 |20220104|gkkpch|Add support for gpio button power on/off (key "479")
 |20220210|gkkpch|Add support for Odroid Wireless module 5A and 5B
 |20240409|gkkpch|Change boot.ini: 'bootconfig' becomes 'uidconfig'
+|20250607|gkkpch|Added wireless driver for RTL8812BU and RTL8822BU
+|||This will add support for a.o.
+|||- Generic Realtek (vendor-id 0x0bda)
+|||- Alpha - Alpha (0x13b1:0x0043)
+|||- Dlink DWA-182 (0x2001:0x331c)
+|||- TP-Link Archer T4U V3 (0x2357:0x0115)
+|||- TP-Link Archer T3U V1 (0x2357:0x012d)
+|||- Edimax EW-7822ULC (0x7392:0xb822)
+|||- Edimax EW-7822UTC (0x7392:0xc822)
+|||- ASUS AC1300 USB-AC55 B1 (0x0b05:0x1841)
+|||- ASUS USB-AC53 Nano (0x0b05:0x184c)
+|||- EDUP 802.11ac (0x0bda:0xb812)
+|20250727||Merged N2/C4 maintenance
+
+**Merged platform build for C4 and N2**
+
+|20250727|gkkpch|Added build platform toolchain
+|||Kernel follows N2 configuration (incl. new wifi support)
+
 
 

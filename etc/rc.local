@@ -1,0 +1,19 @@
+#!/bin/sh -e
+#/usr/local/bin/n2-init.sh
+
+echo heartbeat > /sys/class/leds/blue\:heartbeat/trigger 
+
+[ "$FREQ" ] || FREQ=18000000
+
+echo $FREQ > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq
+echo $FREQ > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
+echo $FREQ > /sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq
+echo $FREQ > /sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq
+
+echo 2 > /proc/irq/22/smp_affinity
+echo 4 > /proc/irq/46/smp_affinity
+echo 4 > /proc/irq/54/smp_affinity
+echo 8 > /proc/irq/23/smp_affinity
+
+
+exit 0
