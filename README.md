@@ -70,7 +70,7 @@ See below for details
 **Merged platform build for C4 and N2**
 
 |20250727|gkkpch|Added build platform toolchain
-|||Kernel follows N2 configuration (incl. new wifi support)
+|||Kernel follows merged C4/N2 configuration (incl. new wifi support)
 
 
 

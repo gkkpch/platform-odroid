@@ -5,7 +5,7 @@ clone_uboot() {
   if [ -d odroidg12-v2015.01 ]; then
     log "u-boot-g12-v2015.01 exists, no action" "info"
   else
-    git clone https://github.com/hardkernel/u-boot.git -b odroidg12-v2015.01 odroidg12-v2015.01 
+    git clone https://github.com/hardkernel/u-boot.git -b odroidg12-v2015.01 odroidg12-v2015.01
     log "u-boot-g12-v2015.01 clone successfully"
   fi
 }
@@ -24,11 +24,11 @@ compile_uboot() {
   make mrproper
   make ARCH=arm64 CROSS_COMPILE=aarch64-none-elf- ${DEVICE}_defconfig
   make
-  
+
   log "securing uboot"
   [ -d ${SRC}/uboot/${DEVICE} || mkdir -p ${SRC}/uboot/${DEVICE}
   cp sd_fuse/u-boot.bin ${SRC}/uboot/${DEVICE}
-  log "Compile u-boot succeeded successfully" 
+  log "Compile u-boot succeeded successfully"
   cd ..
 }
 
@@ -46,7 +46,8 @@ compile_kernel() {
   log "Compiling dts, image and modules"
   make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(expr $(expr $(nproc) \* 6) \/ 5) Image.gz dtbs modules
 
-  log "securing used defconfig file" 
+  log "securing used defconfig file"
+  rm ${SRC}/configs/config-4.9*
   kver=`make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 kernelrelease`-`date +%Y.%m.%d-%H.%M`
   cp arch/arm64/configs/odroidg12_defconfig ${SRC}/configs/config-${kver}
 
@@ -54,7 +55,7 @@ compile_kernel() {
 }
 
 build_platform() {
- 
+
   log "Saving platform files to ${PLATFORMDIR}" "info"
   log "Initializing..."
   if [ -d ${DEVICE} ]; then
@@ -74,10 +75,10 @@ build_platform() {
   cp arch/arm64/boot/Image.gz ${PLATFORMDIR}/boot
   cp arch/arm64/boot/dts/amlogic/meson64_${DEVICE}*.dtb ${PLATFORMDIR}/boot/amlogic
   cp arch/arm64/boot/dts/amlogic/overlays/${DEVICE}/*.dtbo ${PLATFORMDIR}/boot/amlogic/overlays/${DEVICE}
-  
+
   log "Copying used defconfig"
   cp ${SRC}/configs/config-${kver} ${PLATFORMDIR}/boot
- 
+
   log "Copying modules..."
   make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 modules_install INSTALL_MOD_PATH=${PLATFORMDIR}/
   cd ..
