@@ -2,38 +2,39 @@
 
 
 clone_uboot() {
-  if [ -d odroidg12-v2015.01 ]; then
-    log "u-boot-g12-v2015.01 exists, no action" "info"
+  if [ -d ${UBOOTDIR} ]; then
+    log "${UBOOTDIR} exists, keeping it" "info"
   else
-    git clone https://github.com/hardkernel/u-boot.git -b odroidg12-v2015.01 odroidg12-v2015.01
-    log "u-boot-g12-v2015.01 clone successfully"
+    git clone ${UBOOT_REPO_URL} -b ${UBOOTBRANCH} ${UBOOTDIR}
+    log "${UBOOTDIR}, branch ${UBOOTBRANCH} clone successfully" "info"
   fi
 }
 
 clone_kernel() {
-  if [ -d odroidg12-4.9.y ]; then
-    log "odroidg12-4.9.y exists, no action"
+  if [ -d ${KERNELDIR} ]; then
+    log "${KERNELDIR} exists, keeping it"
   else
-    git clone https://github.com/gkkpch/linux-odroid.git -b odroidg12-4.9.y odroidg12-4.9.y
-    log "odroidg12-4.9.y cloned successfully"
+    git clone ${LINUX_REPO_URL} -b ${KERNELBRANCH} ${KERNELDIR}
+    log "${KERNELDIR}, branch ${KERNELBRANCH} cloned successfully"
   fi
 }
 
 compile_uboot() {
-  cd odroidg12-v2015.01
+  cd ${UBOOTDIR}
   make mrproper
   make ARCH=arm64 CROSS_COMPILE=aarch64-none-elf- ${DEVICE}_defconfig
   make
 
   log "securing uboot"
-  [ -d ${SRC}/uboot/${DEVICE} || mkdir -p ${SRC}/uboot/${DEVICE}
+  [ -d ${SRC}/uboot/${DEVICE} ] || mkdir -p ${SRC}/uboot/${DEVICE}
   cp sd_fuse/u-boot.bin ${SRC}/uboot/${DEVICE}
-  log "Compile u-boot succeeded successfully"
+  log "Compiled ${UBOOTBRANCH} successfully" "info"
   cd ..
 }
 
 compile_kernel() {
-  cd odroidg12-4.9.y
+
+  cd ${KERNELDIR}
   log "Cleaning and preparing .config"
 
   cp ${SRC}/configs/odroidg12_defconfig arch/arm64/configs/
@@ -47,10 +48,11 @@ compile_kernel() {
   make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(expr $(expr $(nproc) \* 6) \/ 5) Image.gz dtbs modules
 
   log "securing used defconfig file"
-  rm ${SRC}/configs/config-4.9*
+  rm ${SRC}/${CURRENTCONFIG_PREFIX}*
   kver=`make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 kernelrelease`
   cp arch/arm64/configs/odroidg12_defconfig ${SRC}/configs/config-${kver}
 
+  log "Kernel compiled successfully" "info"
   cd ..
 }
 
@@ -70,7 +72,7 @@ build_platform() {
   log "Coyping u-boot..."
   cp uboot/${DEVICE}/u-boot.bin ${PLATFORMDIR}/uboot/
 
-  cd odroidg12-4.9.y
+  cd ${KERNELDIR}
   log "Copying image and dtb's.."
   cp arch/arm64/boot/Image.gz ${PLATFORMDIR}/boot
   cp arch/arm64/boot/dts/amlogic/meson64_${DEVICE}*.dtb ${PLATFORMDIR}/boot/amlogic

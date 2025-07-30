@@ -4,22 +4,22 @@
 #
 # This script is used for building the kernel, u-boot and platform files used for Odroid C4 and Odroid C5.
 #
-# Prerequisites cq recommended packages:   nfs-common cifs-utils build-essential ca-certificates curl 
-#                                           debootstrap dosfstools git jq kpartx libssl-dev lz4 lzop 
-#                                           md5deep multistrap parted patch pv qemu-user-static qemu-utils 
-#                                           squashfs-tools sudo u-boot-tools wget xz-utils zip debhelper 
+# Prerequisites cq recommended packages:   nfs-common cifs-utils build-essential ca-certificates curl
+#                                           debootstrap dosfstools git jq kpartx libssl-dev lz4 lzop
+#                                           md5deep multistrap parted patch pv qemu-user-static qemu-utils
+#                                           squashfs-tools sudo u-boot-tools wget xz-utils zip debhelper
 #                                           libelf-dev flex bison
 #
 # You also need to install the correct toolchain to cross-compile the kernel:
-# https://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz
+# http://tbs    gcc-linaro-11.3.1-2022.06-x86_64_aarch64-linux-gnu
 #
 # For cross-compiling U-Boot:
 # https://releases.linaro.org/archive/13.11/components/toolchain/binaries/gcc-linaro-aarch64-none-elf-4.8-2013.11_linux.tar.xz
 # https://releases.linaro.org/archive/14.04/components/toolchain/binaries/gcc-linaro-arm-none-eabi-4.8-2014.04_linux.tar.xz
 
-export PATH=/opt/toolchains/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/bin/:$PATH
+export PATH=/opt/toolchains/gcc-linaro-11.3.1-2022.06-x86_64_aarch64-linux-gnu/bin/:$PATH
 export PATH=/opt/toolchains/gcc-linaro-aarch64-none-elf-4.8-2013.11_linux/bin/:/opt/toolchains/gcc-linaro-arm-none-eabi-4.8-2014.04_linux/bin/:$PATH
-export ARCH=arm64 
+export ARCH=arm64
 
 SRC="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 # check for whitespace in ${SRC} and exit for safety reasons
@@ -51,11 +51,11 @@ _EOF_
       1)
         DEVICE="odroidc4"
         break
-        ;; 
+        ;;
       2)
         DEVICE="odroidn2"
         break
-        ;; 
+        ;;
       3)
         echo "Platform build interrupted"
         exit
@@ -67,16 +67,28 @@ _EOF_
   fi
 done
 
+source "${SRC}"/configs/config.arm64
+
+log "LINUX_REPO_URL=       " ${LINUX_REPO_URL}
+log "KERNELDIR=            " ${KERNELDIR}
+log "KERNELBRANCH=         " ${KERNELBRANCH}
+log "CURRENTCONFIG_PREFIX= " ${CURRENTCONFIG_PREFIX}
+
+log "UBOOT_REPO_URL=       " ${UBOOT_REPO_URL}
+log "UBOOTDIR=             " ${UBOOTDIR}
+log "UBOOTBRANCH           " ${UBOOTBRANCH}
+
+
 PLATFORMDIR=${SRC}/$DEVICE
-echo $PLATFORMDIR
+log "PLATFORMDIR           "  $PLATFORMDIR
 
 log "Start processing for $DEVICE"
-log "Cloning u-boot" "info"
+log "Cloning ${UBOOTDIR}, branch ${UBOOTBRANCH}" "info"
 clone_uboot
 log "Compiling u-boot..."
 compile_uboot ${DEVICE}
 
-log "Cloning kernel" "info"
+log "Cloning ${KERNELDIR}, branch ${KERNELBRANCH}" "info"
 clone_kernel
 log "Compiling the kernel..."
 compile_kernel

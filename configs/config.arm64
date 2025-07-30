@@ -1,0 +1,10 @@
+#!/bin/bash
+
+LINUX_REPO_URL="http://github.com/hardkernel/linux.git"
+KERNELDIR="linux-odroid"
+KERNELBRANCH="odroid-6.6.y"
+CURRENTCONFIG_PREFIX="config-6.6"
+
+UBOOT_REPO_URL="https://github.com/hardkernel/u-boot.git"
+UBOOTDIR="uboot-odroid"
+UBOOTBRANCH="odroidg12-v2015.01"
